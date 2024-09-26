@@ -14,6 +14,7 @@ axiosInstance.interceptors.request.use(
       return config;
   },
   (error) => {
+    console.log(error, "error");
     return Promise.reject(error);
   }
 );
@@ -28,9 +29,7 @@ axiosInstance.interceptors.response.use(
       // Здесь вы можете выполнить действия, например, перенаправить пользователя на страницу входа
       console.error('Ошибка 401: Неавторизованный доступ. Перенаправление на страницу входа.');
     }
-    if(!localStorage.getItem("token")){
-        window.location.href = '/login'
-    }
+    window.location.href = '/login'
     return Promise.reject(error);
   }
 );

@@ -13,7 +13,7 @@ import { alertService, severityType } from "../snackBar/alertService";
 export default function Order() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0.00);
   const dispatch = useDispatch();
   const [address, setAddress] = useState("");
   const user = useSelector(authUser);
@@ -25,12 +25,12 @@ export default function Order() {
     createKeyPairProductQuantity(productsArray);
     let totalSum = calculateTotalCost(productsArray);
     setTotal(totalSum);
-  }, []);
+  }, [productQuantity]);
 
   function createKeyPairProductQuantity(productsArray) {
     const arr = productsArray.map((product) => ({
       productId: product.id,
-      quantity: 1,
+      quantity: getProductQuantity(product.id) ?? 1,
     }));
     setQuantity(arr);
   }
@@ -55,9 +55,11 @@ export default function Order() {
 
   function calculateTotalCost(arr) {
     return () =>
-      arr.reduce((accumulator, product) => {
-        return accumulator + product.price;
-      }, 0);
+      parseFloat(
+        arr.reduce((accumulator, product) => {
+          return accumulator + (product.price * getProductQuantity(product.id));
+        }, 0).toFixed(2)
+      );
   }
 
   function removeHandler(id) {
