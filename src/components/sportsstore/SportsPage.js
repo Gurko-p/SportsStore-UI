@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import ProductList from "./ProductList";
 
 const SportsPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState({ id: 0, categoryName: "Все" });
 
   return (
     <Box sx={{ display: "flex", margin: "0 0 0 0" }}>

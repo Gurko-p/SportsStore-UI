@@ -26,7 +26,7 @@ export const urls = {
         create: "api/products/create",
         update: (id) => `api/products/update/${id}`,
         remove: (id) => `api/products/remove/${id}`,
-        chunk: (page, pageSize) => `api/products/list/chunk?pageNumber=${page}&pageSize=${pageSize}`,
+        chunk: (page, pageSize, filterByCategoryId) => `api/products/list/chunk?page=${page}&pageSize=${pageSize}&filterByCategoryId=${filterByCategoryId}`,
         totalCount: "api/products/totalCount"
     },
     carts: {

@@ -8,8 +8,8 @@ export const productsApi = {
     async getProduct(id) {
         return axiosInstance.get(urls.products.item(id))
     },
-    async getProductsChunk(page, pageSize) {
-        return axiosInstance.get(urls.products.chunk(page, pageSize));
+    async getProductsChunk(page, pageSize, filterByCategoryId) {
+        return axiosInstance.get(urls.products.chunk(page, pageSize, filterByCategoryId));
     },
     async getProductsTotalCount() {
         return axiosInstance.get(urls.products.totalCount);
