@@ -4,16 +4,24 @@ import Button from "@mui/material/Button";
 
 export default function Sidebar({ setSelectedCategory }) {
   const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Новое состояние
+  const all = { id: 0, categoryName: "Все" };
 
   useEffect(() => {
     categoriesApi
       .getCategories()
       .then((response) => response.data)
-      .then((p) => setCategories(p));
+      .then((categoriesResponse) => {
+        setCategories([all,  ...categoriesResponse]);
+      })
+      if(!selectedCategoryId){
+        setSelectedCategoryId(all.id);
+      };
   }, []);
 
   function handleCategoryClick(category) {
     setSelectedCategory(category);
+    setSelectedCategoryId(category.id);
   }
 
   return (
@@ -29,27 +37,19 @@ export default function Sidebar({ setSelectedCategory }) {
     >
       {categories.map((category) => (
         <Button
-          sx={{ marginBottom: "10px" }}
+          sx={{ 
+            marginBottom: "10px", 
+            backgroundColor: selectedCategoryId === category.id ? 'rgba(165, 76, 255,0.81)' : 'primary' // Изменяем цвет кнопки
+          }}
           key={category.id}
           size="large"
           fullWidth
-          color="secondary"
           variant="contained"
           onClick={() => handleCategoryClick(category)}
         >
           {category.categoryName}
         </Button>
       ))}
-      <Button
-        sx={{ marginBottom: "10px" }}
-        size="large"
-        fullWidth
-        color="secondary"
-        variant="contained"
-        onClick={() => handleCategoryClick({ id: 0 })}
-      >
-        Все
-      </Button>
     </div>
   );
 }
