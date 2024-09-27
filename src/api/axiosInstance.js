@@ -4,6 +4,7 @@ const axiosInstance = axios.create({
   baseURL: `${process.env.REACT_APP_BACKEND_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}:${process.env.REACT_APP_BACKEND_PORT}/`
 });
 
+
 //Добавляем интерсептор запроса
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -19,17 +20,17 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+
 axiosInstance.interceptors.response.use(
-  response => {
-    return response;
-  },
+  response => response,
   error => {
-    // Проверяем, является ли ошибка 401
-    if (error.response && error.response.status === 401) {
-      // Здесь вы можете выполнить действия, например, перенаправить пользователя на страницу входа
-      console.error('Ошибка 401: Неавторизованный доступ. Перенаправление на страницу входа.');
+    if (error.response) {
+      if (error.response.status === 401 || error.response.status === 403) {
+        // Редирект на страницу входа
+        console.error('Ошибка 401: Неавторизованный доступ. Перенаправление на страницу входа.');
+        window.location.href = '/login';
+      }
     }
-    window.location.href = '/login'
     return Promise.reject(error);
   }
 );
