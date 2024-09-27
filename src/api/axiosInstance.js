@@ -20,20 +20,4 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response) {
-      if (error.response.status === 401 || error.response.status === 403) {
-        // Редирект на страницу входа
-        console.error('Ошибка 401: Неавторизованный доступ. Перенаправление на страницу входа.');
-        window.location.href = '/login';
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
-
 export default axiosInstance;
