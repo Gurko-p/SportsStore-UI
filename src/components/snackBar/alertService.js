@@ -1,28 +1,10 @@
 import store from "../../app/store";
-import { showSnackBar, hideSnackBar } from "../../features/snack/snackSlice";
+import { showMessage, severityType } from "../../features/alert/alertSlice";
 
 export const alertService = {
   show(message, severity, duration = 5000) {
-    showSnack(message, severity, duration);
+    store.dispatch(showMessage({ message: message, severity: severity, duration: duration }));
   },
 };
 
-export const severityType = {
-  success: "success",
-  error: "error",
-  warning: "warning",
-  info: "info",
-};
-
-function showSnack(message, severity, duration = 5000) {
-  store.dispatch(showSnackBar({ message: message, severity: severity }));
-  setCustomTimeout(duration);
-}
-
-const setCustomTimeout = (duration) => {
-  let timerId;
-  timerId = setTimeout(() => {
-    store.dispatch(hideSnackBar());
-    clearTimeout(timerId);
-  }, duration);
-};
+export const severity = severityType;

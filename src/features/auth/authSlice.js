@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authAPI } from "../../api/authAPI";
 import { getLocalToken, removeLocalToken, saveLocalToken } from "../../utils";
+import { severityType, showMessage } from '../alert/alertSlice';
 
 const initialState = {
   token: null,
@@ -75,9 +76,8 @@ export const userLogin = createAsyncThunk(
       return;
     } catch (error) {
       dispatch(userIsErrorChange(true));
-      console.error(error);
       if(error?.response?.data?.status === 401){
-        alert("Неверный логин или пароль!");
+        dispatch(showMessage({ message: "Неверный логин или пароль", severity: severityType.error }))
       }
     }
   }

@@ -23,11 +23,11 @@ const router = createBrowserRouter([
     path: "/",
     Component: MainLayout,
     children: [
-      { index: true, Component: SportsPage },
-      { path: "about", Component: About },
-      { path: "cart", Component: Cart },
-      { path: "order", Component: Order },
-      { path: "myOrders", Component: MyOrders },
+      { index: true, Component: SportsPage, loader: protectedLoader },
+      { path: "about", Component: About, loader: protectedLoader },
+      { path: "cart", Component: Cart, loader: protectedLoader },
+      { path: "order", Component: Order, loader: protectedLoader },
+      { path: "myOrders", Component: MyOrders, loader: protectedLoader },
     ],
     loader: protectedLoader,
   },
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { open, message, severity } = useSelector((state) => state.snackBar);
+  const { open, message, severity } = useSelector((state) => state.alert);
   return (
     <>
       <RouterProvider router={router} />

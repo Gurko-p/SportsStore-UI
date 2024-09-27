@@ -8,7 +8,7 @@ import {
 } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { ordersApi } from "../../api/ordersAPI";
-import { alertService, severityType } from "../snackBar/alertService";
+import { alertService, severity } from "../snackBar/alertService";
 
 export default function Order() {
   const navigate = useNavigate();
@@ -84,14 +84,11 @@ export default function Order() {
     try {
       createdOrder = await ordersApi.createOrderCarts(order);
     } catch (error) {
-      alertService.show("Ошибка при оформлении заказа!", severityType.error);
+      alertService.show("Ошибка при оформлении заказа!", severity.error);
       return;
     }
 
-    alertService.show(
-      `Ваш заказ №${createdOrder.data.id} успешно сформирован!`,
-      severityType.success
-    );
+    alertService.show(`Ваш заказ №${createdOrder.data.id} успешно сформирован!`, severity.success);
     navigate("/");
   };
 
