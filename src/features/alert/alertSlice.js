@@ -29,7 +29,6 @@ export const severityType = {
 export const showMessage = createAsyncThunk(
   "alert/showMessage",
   async ({ message, severity, duration = 5000 }, { dispatch }) => {
-    console.log("метод showMessage")
     dispatch(showAlertMessage({ message: message, severity: severity }));
     let timerId;
     timerId = setTimeout(() => {
