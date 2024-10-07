@@ -65,25 +65,22 @@ export default function Order() {
     setProducts(arr);
   };
 
-  const makeOrder = async () => {
-    const addedCarts = products.map((product) => ({
-      quantity: getProductQuantity(product.id),
-      productId: product.id,
-    }));
-    let order = { userId: user.userName, address: address, carts: addedCarts };
-    let createdOrder;
+  const makeOrder = async (e) => {
+    e.preventDefault();
     try {
-      createdOrder = await ordersApi.createOrderCarts(order);
+      const addedCarts = products.map((product) => ({
+        quantity: getProductQuantity(product.id),
+        productId: product.id,
+      }));
+      let order = { userId: user.userName, address: address, carts: addedCarts };
+      const createdOrder = await ordersApi.createOrderCarts(order);
       localStorage.removeItem("cart");
       dispatch(countProductsInCartChange(0));
+      alertService.show(`Ваш заказ №${createdOrder.data.id} успешно сформирован!`, severity.success);
+      navigate("/");
     } catch (error) {
       alertService.show("Ошибка при оформлении заказа!", severity.error);
-      navigate("/");
-      return;
     }
-
-    alertService.show(`Ваш заказ №${createdOrder.data.id} успешно сформирован!`, severity.success);
-    navigate("/");
   };
 
   function getProductQuantity(productId) {
@@ -99,47 +96,49 @@ export default function Order() {
             Общая сумма заказа <strong>{total} BYN</strong>
           </div>
           <h2>Введите адрес доставки:</h2>
-          <Box>
-            <TextField
-              label="Введите адрес доставки"
-              sx={{ minWidth: "400px", maxWidth: "400px" }}
-              variant="outlined"
-              margin="normal"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </Box>
-          <h2>Состав заказа:</h2>
-          <div style={{ display: "inline-block" }}>
-            {products.map((product) => (
-              <div key={product.id}>
-                <Product product={product} onRemove={removeHandler} />
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                  <Button onClick={() => increaseQuantity(product.id)}>
-                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>+</span>
-                  </Button>
-                  <span style={{ fontSize: "25px", fontWeight: "bolder" }}>
-                    {getProductQuantity(product.id)}
-                  </span>
-                  <Button onClick={() => decreaseQuantity(product.id)}>
-                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>-</span>
-                  </Button>
+          <form onSubmit={async (e) => makeOrder(e)}>
+            <Box>
+              <TextField
+                label="Введите адрес доставки"
+                sx={{ minWidth: "400px", maxWidth: "400px" }}
+                variant="outlined"
+                margin="normal"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </Box>
+            <h2>Состав заказа:</h2>
+            <div style={{ display: "inline-block" }}>
+              {products.map((product) => (
+                <div key={product.id}>
+                  <Product product={product} onRemove={removeHandler} />
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Button onClick={() => increaseQuantity(product.id)}>
+                      <span style={{ fontSize: "15px", fontWeight: "bolder" }}>+</span>
+                    </Button>
+                    <span style={{ fontSize: "25px", fontWeight: "bolder" }}>
+                      {getProductQuantity(product.id)}
+                    </span>
+                    <Button onClick={() => decreaseQuantity(product.id)}>
+                      <span style={{ fontSize: "15px", fontWeight: "bolder" }}>-</span>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-            <Button
-              type="primary"
-              variant="contained"
-              color={"warning"}
-              disabled={products.length === 0}
-              onClick={async () => await makeOrder()}
-            >
-              Оформить заказ
-            </Button>
-          </Box>
+              ))}
+            </div>
+            <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color={"warning"}
+                disabled={products.length === 0}
+              >
+                Оформить заказ
+              </Button>
+            </Box>
+          </form>
+
         </div>
       </Container>
     </div>
