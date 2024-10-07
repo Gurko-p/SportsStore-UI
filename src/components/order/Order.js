@@ -78,6 +78,7 @@ export default function Order() {
       dispatch(countProductsInCartChange(0));
     } catch (error) {
       alertService.show("Ошибка при оформлении заказа!", severity.error);
+      navigate("/");
       return;
     }
 
