@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Product from "../sportsstore/Product";
 import { Container, Button, Box, TextField } from "@mui/material";
@@ -13,9 +13,8 @@ import { alertService, severity } from "../snackBar/alertService";
 export default function Order() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0.00);
-  const dispatch = useDispatch();
   const [address, setAddress] = useState("");
+  const dispatch = useDispatch();
   const user = useSelector(authUser);
   const [productQuantity, setQuantity] = useState([]);
 
@@ -23,9 +22,7 @@ export default function Order() {
     let productsArray = JSON.parse(localStorage.getItem("cart")) ?? [];
     setProducts(productsArray);
     createKeyPairProductQuantity(productsArray);
-    let totalSum = calculateTotalCost(productsArray);
-    setTotal(totalSum);
-  }, [productQuantity]);
+  }, []);
 
   function createKeyPairProductQuantity(productsArray) {
     const arr = productsArray.map((product) => ({
@@ -33,7 +30,7 @@ export default function Order() {
       quantity: getProductQuantity(product.id) ?? 1,
     }));
     setQuantity(arr);
-  }
+  };
 
   const increaseQuantity = (id) => {
     setQuantity(
@@ -54,35 +51,31 @@ export default function Order() {
   };
 
   function calculateTotalCost(arr) {
-    return () =>
-      parseFloat(
-        arr.reduce((accumulator, product) => {
-          return accumulator + (product.price * getProductQuantity(product.id));
-        }, 0).toFixed(2)
-      );
-  }
+    return arr.reduce((accumulator, product) => {
+      return accumulator + (product.price * getProductQuantity(product.id));
+    }, 0);
+  };
 
-  function removeHandler(id) {
+  const total = useMemo(() => {
+    return parseFloat(calculateTotalCost(products).toFixed(2));
+  }, [products, productQuantity]);
+
+  const removeHandler = (id) => {
     let arr = products.filter((cart) => cart.id !== id);
     setProducts(arr);
-    let totalSum = calculateTotalCost(arr);
-    setTotal(totalSum);
-  }
+  };
 
   const makeOrder = async () => {
-    localStorage.removeItem("cart");
-    dispatch(countProductsInCartChange(0));
-    const addedCarts = [];
-    products.forEach((product) => {
-      addedCarts.push({
-        quantity: getProductQuantity(product.id),
-        productId: product.id,
-      });
-    });
+    const addedCarts = products.map((product) => ({
+      quantity: getProductQuantity(product.id),
+      productId: product.id,
+    }));
     let order = { userId: user.userName, address: address, carts: addedCarts };
     let createdOrder;
     try {
       createdOrder = await ordersApi.createOrderCarts(order);
+      localStorage.removeItem("cart");
+      dispatch(countProductsInCartChange(0));
     } catch (error) {
       alertService.show("Ошибка при оформлении заказа!", severity.error);
       return;
@@ -94,17 +87,15 @@ export default function Order() {
 
   function getProductQuantity(productId) {
     return productQuantity.find((x) => x.productId === productId)?.quantity;
-  }
+  };
 
   return (
-    <div
-      style={{ display: "flex", justifyContent: "center", minHeight: "100vh" }}
-    >
+    <div style={{ display: "flex", justifyContent: "center", minHeight: "100vh" }}>
       <Container>
         <div style={{ textAlign: "center" }}>
           <h2>Оформление заказа</h2>
           <div style={{ fontSize: "25px" }}>
-            Общая сумма заказа <strong>{total}BYN</strong>
+            Общая сумма заказа <strong>{total} BYN</strong>
           </div>
           <h2>Введите адрес доставки:</h2>
           <Box>
@@ -123,25 +114,15 @@ export default function Order() {
             {products.map((product) => (
               <div key={product.id}>
                 <Product product={product} onRemove={removeHandler} />
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <Button onClick={() => increaseQuantity(product.id)}>
-                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>
-                      +
-                    </span>
+                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>+</span>
                   </Button>
                   <span style={{ fontSize: "25px", fontWeight: "bolder" }}>
                     {getProductQuantity(product.id)}
                   </span>
                   <Button onClick={() => decreaseQuantity(product.id)}>
-                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>
-                      -
-                    </span>
+                    <span style={{ fontSize: "15px", fontWeight: "bolder" }}>-</span>
                   </Button>
                 </div>
               </div>
