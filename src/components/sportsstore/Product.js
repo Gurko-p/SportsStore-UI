@@ -7,7 +7,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Rating from "@mui/material/Rating";
+import ProductRating from "./ProductRating";
 import {
   countProductsInCartChange,
   itemCountInCart,
@@ -89,21 +89,7 @@ export default function Product({ product, onRemove }) {
               >
                 {product.name}
               </Typography>
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Rating
-                  name="product-rating"
-                  precision={0.5}
-                  value={product?.rating?.overallRating ?? 0}
-                  onChange={(event, newValue) =>
-                    console.log(newValue, "newValue")
-                  }
-                />
-                <Typography sx={{ color: "text.secondary" }}>
-                    ({product?.rating?.overallRating ?? 0}) (
-                    {product?.rating?.totalRates ?? "нет оценок"})
-                </Typography>
-              </Box>
-
+              <ProductRating product={product} />
               <Typography sx={{ color: "text.secondary", mt: 2, fontSize: 15 }}>
                 {product.category.categoryName}
               </Typography>
