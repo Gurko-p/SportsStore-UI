@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { baseURL } from './urls';
 
 const axiosInstance = axios.create({
-  baseURL: `${process.env.REACT_APP_BACKEND_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}:${process.env.REACT_APP_BACKEND_PORT}/`
+  baseURL: baseURL
 });
 
 
