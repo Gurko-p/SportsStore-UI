@@ -14,4 +14,7 @@ export const productsApi = {
     async getProductsTotalCount() {
         return axiosInstance.get(urls.products.totalCount);
     },
+    async setProductRate(productId, rating) {
+        return axiosInstance.post(urls.products.rate, { productId: productId, rating: rating });
+    },
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Rating, Box, Typography } from '@mui/material';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import { baseURL } from '../../api/urls';
+import { urls } from '../../api/urls';
+import { productsApi } from '../../api/productsAPI';
 
 const ProductRating = ({ product }) => {
   const [averageRating, setAverageRating] = useState(0);
@@ -9,11 +10,10 @@ const ProductRating = ({ product }) => {
 
   useEffect(() => {
     const connect = new HubConnectionBuilder()
-      .withUrl(`${baseURL}ratingHub`)
+      .withUrl(urls.hubs.ratingHubUrl)
       .build();
     connect?.on('ReceiveRating', (product) => {
-      console.log("соединение с хабом установлено")
-      //setAverageRating(product.averageRating);
+      console.log(product, "из SignalR")
     });
     setConnection(connect);
   }, []);
@@ -23,7 +23,6 @@ const ProductRating = ({ product }) => {
       connection?.start()
         .then(() => console.log('Connected to SignalR hub'))
         .catch(err => console.log('Error while starting connection: ' + err));
-
       return () => {
         connection?.stop();
       };
@@ -31,14 +30,7 @@ const ProductRating = ({ product }) => {
   }, [connection]);
 
   const handleRatingChange = async (newValue) => {
-    console.log(newValue, "newValue");
-    // await fetch('/api/products/rate', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ productId: product.id, rating: newValue }),
-    // });
+    await productsApi.setProductRate(product.id, newValue);
   };
 
   return (

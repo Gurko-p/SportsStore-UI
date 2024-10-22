@@ -1,3 +1,5 @@
+export const baseURL = `${process.env.REACT_APP_BACKEND_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}:${process.env.REACT_APP_BACKEND_PORT}/`;
+
 export const urls = {
     account: {
         register: "api/account/register",
@@ -27,7 +29,8 @@ export const urls = {
         update: (id) => `api/products/update/${id}`,
         remove: (id) => `api/products/remove/${id}`,
         chunk: (page, pageSize, filterByCategoryId) => `api/products/list/chunk?page=${page}&pageSize=${pageSize}&filterByCategoryId=${filterByCategoryId}`,
-        totalCount: "api/products/totalCount"
+        totalCount: "api/products/totalCount",
+        rate: "api/products/rate"
     },
     carts: {
         list: "api/carts/list",
@@ -35,7 +38,9 @@ export const urls = {
         create: "api/carts/create",
         update: (id) => `api/carts/update/${id}`,
         remove: (id) => `api/carts/remove/${id}`
-    }
+    },
+    hubs: {
+        ratingHubUrl: `${baseURL}ratingHub`
+    },
 }
 
-export const baseURL = `${process.env.REACT_APP_BACKEND_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}:${process.env.REACT_APP_BACKEND_PORT}/`;
