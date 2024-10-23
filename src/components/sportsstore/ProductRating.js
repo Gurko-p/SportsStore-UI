@@ -1,37 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Rating, Box, Typography } from '@mui/material';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import { urls } from '../../api/urls';
-import { productsApi } from '../../api/productsAPI';
 
-const ProductRating = ({ product }) => {
-  const [averageRating, setAverageRating] = useState(0);
-  const [connection, setConnection] = useState(null);
-
-  useEffect(() => {
-    const connect = new HubConnectionBuilder()
-      .withUrl(urls.hubs.ratingHubUrl)
-      .build();
-    connect?.on('ReceiveRating', (product) => {
-      console.log(product, "из SignalR")
-    });
-    setConnection(connect);
-  }, []);
-
-  useEffect(() => {
-    if (connection) {
-      connection?.start()
-        .then(() => console.log('Connected to SignalR hub'))
-        .catch(err => console.log('Error while starting connection: ' + err));
-      return () => {
-        connection?.stop();
-      };
-    }
-  }, [connection]);
-
-  const handleRatingChange = async (newValue) => {
-    await productsApi.setProductRate(product.id, newValue);
-  };
+const ProductRating = ({ product, handleRatingChange }) => {
 
   return (
     <div>

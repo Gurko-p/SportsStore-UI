@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./productItem.styles.css";
 import Box from "@mui/material/Box";
@@ -12,11 +12,16 @@ import {
   countProductsInCartChange,
   itemCountInCart,
 } from "../../features/auth/authSlice";
+import { productsApi } from '../../api/productsAPI';
 
 export default function Product({ product, onRemove }) {
   const key = "cart";
   const dispatch = useDispatch();
   const countInCart = useSelector(itemCountInCart);
+
+  const handleRatingChange = async (newValue) => {
+    await productsApi.setProductRate(product.id, newValue);
+  };
 
   function addToCart(product) {
     if (isCartEmpty()) {
@@ -89,7 +94,7 @@ export default function Product({ product, onRemove }) {
               >
                 {product.name}
               </Typography>
-              <ProductRating product={product} />
+              <ProductRating product={product} handleRatingChange={handleRatingChange}/>
               <Typography sx={{ color: "text.secondary", mt: 2, fontSize: 15 }}>
                 {product.category.categoryName}
               </Typography>
