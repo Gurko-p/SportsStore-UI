@@ -18,7 +18,7 @@ export default function ProgressLoader({ loading }) {
         zIndex: 9999,
       }}
     >
-      <CircularProgress />
+      <CircularProgress size={ 100 } />
     </Box>
   );
 }
