@@ -14,11 +14,12 @@ export default function Sidebar({ setSelectedCategory }) {
 
   useEffect(() => {
     if(isLoggedInState){
-      categoriesApi
-      .getCategories()
-      .then((response) => response.data)
+      categoriesApi.getCategories()
+      .then((response) => response?.data)
       .then((categoriesResponse) => {
-        setCategories([all,  ...categoriesResponse]);
+        if(categoriesResponse){
+          setCategories([all,  ...categoriesResponse]);
+        }
       })
       if(!selectedCategoryId){
         setSelectedCategoryId(all.id);
