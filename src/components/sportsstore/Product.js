@@ -11,7 +11,7 @@ import ProductRating from "./ProductRating";
 import {
   countProductsInCartChange,
   itemCountInCart,
-} from "../../features/auth/authSlice";
+} from "../../features/shopingCart/cartSlice";
 import { productsApi } from '../../api/productsAPI';
 
 export default function Product({ product, onRemove }) {

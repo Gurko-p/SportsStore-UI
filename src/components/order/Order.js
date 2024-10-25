@@ -2,10 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Product from "../sportsstore/Product";
 import { Container, Button, Box, TextField } from "@mui/material";
-import {
-  countProductsInCartChange,
-  authUser,
-} from "../../features/auth/authSlice";
+import { authUser } from "../../features/auth/authSlice";
+import { countProductsInCartChange } from "../../features/shopingCart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { ordersApi } from "../../api/ordersAPI";
 import { alertService, severity } from "../snackBar/alertService";

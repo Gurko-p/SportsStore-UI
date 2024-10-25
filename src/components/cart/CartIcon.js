@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { itemCountInCart } from "../../features/auth/authSlice";
+import { itemCountInCart } from "../../features/shopingCart/cartSlice";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
