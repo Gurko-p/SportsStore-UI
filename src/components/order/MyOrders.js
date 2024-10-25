@@ -4,10 +4,8 @@ import { authUser, isLoggedIn } from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 import { ordersApi } from "../../api/ordersAPI";
 import OrderItem from "./OrderItem";
-import { useNavigate } from "react-router-dom";
 
 export default function MyOrders() {
-  const navigate = useNavigate();
   const user = useSelector(authUser);
   const isLoggedInState = useSelector(isLoggedIn);
   const [myOrders, setMyOrders] = useState([]);
@@ -18,9 +16,6 @@ export default function MyOrders() {
         .getMyOrders(user.userName)
         .then((response) => response.data)
         .then((p) => setMyOrders(p));
-    }
-    else{
-      navigate("/login");
     }
   }, []);
 

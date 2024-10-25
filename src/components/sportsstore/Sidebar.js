@@ -3,11 +3,9 @@ import { categoriesApi } from "../../api/categoriesApi";
 import Button from "@mui/material/Button";
 import { isLoggedIn } from '../../features/auth/authSlice';
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 export default function Sidebar({ setSelectedCategory }) {
   const isLoggedInState = useSelector(isLoggedIn);
-  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Новое состояние
   const all = { id: 0, categoryName: "Все" };
@@ -24,9 +22,6 @@ export default function Sidebar({ setSelectedCategory }) {
       if(!selectedCategoryId){
         setSelectedCategoryId(all.id);
       };
-    }
-    else{
-      navigate("/login");
     }
   }, []);
 

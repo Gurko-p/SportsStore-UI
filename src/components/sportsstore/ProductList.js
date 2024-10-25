@@ -4,12 +4,10 @@ import Product from "./Product";
 import Pagination from "@mui/material/Pagination";
 import { isLoggedIn } from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { urls } from "../../api/urls";
 
 export default function ProductList({ selectedCategory }) {
-  const navigate = useNavigate();
   const isLoggedInState = useSelector(isLoggedIn);
   const [products, setProducts] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -69,8 +67,6 @@ export default function ProductList({ selectedCategory }) {
           setProducts(p?.products);
           setTotalCount(p?.totalCount);
         });
-    } else {
-      navigate("/login");
     }
   }, [pageNumber, selectedCategory]);
 
