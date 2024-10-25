@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authAPI } from "../../api/authAPI";
 import { getLocalToken, removeLocalToken, saveLocalToken } from "../../utils";
-import { severityType, showMessage } from '../alert/alertSlice';
 
 const initialState = {
   token: null,
@@ -9,7 +8,6 @@ const initialState = {
   isLogInError: null,
   isRegistrationError: null,
   user: null,
-  isLoading: true,
   itemCountInCart: getCarts(),
 };
 
@@ -51,7 +49,7 @@ export const checkLoggedIn = createAsyncThunk(
 
 export const removeLoggedIn = createAsyncThunk(
   "auth/removeLoggedIn",
-  async (_, { getState, dispatch }) => {
+  async (_, { dispatch }) => {
     removeLocalToken();
     dispatch(userTokenChange(null));
     dispatch(userIsLoggedChange(null));
@@ -72,13 +70,11 @@ export const userLogin = createAsyncThunk(
         const userDataResponse = await authAPI.getUserData(token);
         const userData = await userDataResponse.data;
         dispatch(userDataChange(userData));
+        dispatch(userIsErrorChange(false));
       }
       return;
     } catch (error) {
       dispatch(userIsErrorChange(true));
-      if(error?.response?.data?.status === 401){
-        dispatch(showMessage({ message: "Неверный логин или пароль", severity: severityType.error }))
-      }
     }
   }
 );
@@ -102,9 +98,6 @@ const authSlice = createSlice({
     userDataChange(state, action) {
       state.user = action.payload;
     },
-    isLoadingChange(state, action) {
-      state.isLoading = action.payload;
-    },
     countProductsInCartChange(state, action) {
       if (action.payload === 0) {
         state.itemCountInCart = [];
@@ -127,13 +120,11 @@ export const {
   userDataChange,
   userIsRegistrationErrorChange,
   userIsErrorChange,
-  isLoadingChange,
   countProductsInCartChange,
 } = authSlice.actions;
 
 export const isLoggedIn = (state) => state.auth.isLoggedIn;
 export const token = (state) => state.auth.token;
-export const isAuthLoading = (state) => state.auth.isLoading;
 export const authUser = (state) => state.auth.user;
 export const itemCountInCart = (state) => state.auth.itemCountInCart;
 
