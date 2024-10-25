@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { productsApi } from "../../api/productsAPI";
 import Product from "./Product";
 import Pagination from "@mui/material/Pagination";
-import { Button } from "@mui/material";
-import store from "../../app/store";
-import { removeLoggedIn, isLoggedIn } from "../../features/auth/authSlice";
+import { isLoggedIn } from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { HubConnectionBuilder } from "@microsoft/signalr";
@@ -84,14 +82,6 @@ export default function ProductList({ selectedCategory }) {
         </div>
       ))}
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          onClick={() => {
-            console.log("нажата");
-            store.dispatch(removeLoggedIn());
-          }}
-        >
-          НАЖМИ
-        </Button>
         <Pagination
           count={totalPages}
           page={pageNumber}

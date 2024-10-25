@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { removeLoggedIn } from "../../features/auth/authSlice";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeLoggedIn, isLoggedIn } from "../../features/auth/authSlice";
+import { useNavigate, Outlet, useLocation  } from "react-router-dom";
 import CartIcon from "../cart/CartIcon";
 
 export default function MainLayout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isLoggedInState = useSelector(isLoggedIn);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isLoggedInState) {
+      let params = new URLSearchParams();
+      params.set("from", location.pathname + location.search);
+      navigate("/login?" + params.toString(), { replace: true });
+    }
+  }, [isLoggedInState]);
 
   const logout = () => {
     dispatch(removeLoggedIn());
