@@ -8,14 +8,7 @@ const initialState = {
   isLogInError: null,
   isRegistrationError: null,
   user: null,
-  itemCountInCart: getCarts(),
 };
-
-function getCarts() {
-  let carts = JSON.parse(localStorage.getItem("cart"));
-  let arr = carts?.map((obj) => obj.id);
-  return arr ?? [];
-}
 
 export const checkLoggedIn = createAsyncThunk(
   "auth/checkLoggedIn",
@@ -98,19 +91,6 @@ const authSlice = createSlice({
     userDataChange(state, action) {
       state.user = action.payload;
     },
-    countProductsInCartChange(state, action) {
-      if (action.payload === 0) {
-        state.itemCountInCart = [];
-        return;
-      }
-      if (!state.itemCountInCart.some((id) => id === action.payload)) {
-        state.itemCountInCart.push(action.payload);
-      } else {
-        state.itemCountInCart = state.itemCountInCart.filter(
-          (id) => id !== action.payload
-        );
-      }
-    },
   },
 });
 
@@ -120,12 +100,10 @@ export const {
   userDataChange,
   userIsRegistrationErrorChange,
   userIsErrorChange,
-  countProductsInCartChange,
 } = authSlice.actions;
 
 export const isLoggedIn = (state) => state.auth.isLoggedIn;
 export const token = (state) => state.auth.token;
 export const authUser = (state) => state.auth.user;
-export const itemCountInCart = (state) => state.auth.itemCountInCart;
 
 export default authSlice.reducer;
