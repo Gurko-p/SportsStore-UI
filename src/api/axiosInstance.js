@@ -24,7 +24,6 @@ axiosInstance.interceptors.request.use(
     store.dispatch(hideLoader());
     console.log(error, "error");
     alertService.show(`Ошибка сети или сервер недоступен. Обратитесь к системному администратору.`, severity.error, 10000);
-    return Promise.reject(error);
   }
 );
 
@@ -37,20 +36,29 @@ axiosInstance.interceptors.response.use(
   error => {
     const { response } = error;
     store.dispatch(hideLoader());
+    let message = '';
     if (response) {
       if (response.status === 401) {
-        console.error('Ошибка 401: Необходима авторизация. Вероятно истек срок действия токена авторизации.');
         store.dispatch(removeLoggedIn());
+        if(response?.config?.url?.includes('/login')){
+          message = 'Ошибка 401: Неверный логин или пароль.'
+          alertService.show(message, severity.error, 5000);
+        }
+        else{
+          message = 'Ошибка 401: Неверный логин/пароль или истек срок действия токена авторизации.'
+        }
+        console.error(message);
       }
       if (response.status === 403) {
-        console.error('Ошибка 403: Доступ запрещен. Недостаточно прав для использования ресурса.');
         store.dispatch(removeLoggedIn());
+        message = 'Ошибка 403: Доступ запрещен. Недостаточно прав для использования ресурса.';
+        console.error(message);
+        alertService.show(message, severity.error, 5000);
       }
     } else {
       console.error('Ошибка сети или сервер недоступен.');
       alertService.show("Ошибка сети или сервер недоступен. Обратитесь к системному администратору.", severity.error, 10000);
     }
-    return Promise.reject(error);
   }
 );
 
