@@ -33,11 +33,9 @@ export default function Sidebar({ setSelectedCategory }) {
   return (
     <div
       style={{
-        color: "black",
         padding: "10px",
         minWidth: "150px",
         maxWidth: "150px",
-        backgroundColor: "inherit",
         marginRight: "10px",
       }}
     >

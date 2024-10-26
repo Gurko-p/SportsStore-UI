@@ -30,14 +30,17 @@ export default function LoginPage() {
         <div>
           <Box sx={{
              display: 'flex',
-             justifyContent: 'center', /* Центрирование по горизонтали */
-             alignItems: 'center', /* Центрирование по вертикали */
+             justifyContent: 'center',
+             alignItems: 'center',
              height: '100vh'
           }}>
             <Container maxWidth="xs">
               <Typography variant="h4" align="center" gutterBottom>
                 Вход в систему
               </Typography>
+              {/* <Button onClick={toggleTheme} variant="outlined" fullWidth>
+                Переключить тему
+              </Button> */}
               <form onSubmit={submitForm}>
                 <TextField
                   label="Email"

@@ -1,13 +1,10 @@
 import React from "react";
-import {
-  RouterProvider,
-} from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
 import SnackBarComponent from "./components/snackBar/SnackBar";
 import { useSelector } from "react-redux";
-import router from './routes';
+import router from "./routes";
 import ProgressLoader from "./components/loader/ProgressLoader";
-
 
 function App() {
   const { open, message, severity } = useSelector((state) => state.alert);

@@ -84,7 +84,7 @@ export default function Product({ product, onRemove }) {
         <Card
           variant="outlined"
           align="center"
-          sx={{ backgroundColor: "rgb(222 228 235)", mt: 2, fontSize: 15 }}
+          sx={{ mt: 2, fontSize: 15 }}
         >
           <React.Fragment>
             <CardContent>

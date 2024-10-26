@@ -2,13 +2,16 @@ import React, { useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { removeLoggedIn, isLoggedIn } from "../../features/auth/authSlice";
-import { useNavigate, Outlet, useLocation  } from "react-router-dom";
+import { selectTheme, toggleTheme } from "../../features/theme/themeSlice";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import CartIcon from "../cart/CartIcon";
+import { FaSun, FaMoon } from 'react-icons/fa';
 
 export default function MainLayout() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const isLoggedInState = useSelector(isLoggedIn);
+  const selectedTheme = useSelector(selectTheme);
+  const dispatch = useDispatch();
   const location = useLocation();
 
   useEffect(() => {
@@ -22,6 +25,10 @@ export default function MainLayout() {
   const logout = () => {
     dispatch(removeLoggedIn());
     navigate("/login", { replace: true });
+  };
+
+  const switchTheme = () => {
+    dispatch(toggleTheme());
   };
 
   return (
@@ -53,7 +60,24 @@ export default function MainLayout() {
               </Button>
             </div>
           </div>
-          <div style={{ minWidth: "150px", display: "flex" }}>
+          <div
+            style={{ minWidth: "150px", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <div>
+              <Typography
+                onClick={switchTheme}
+                sx={{ 
+                cursor: "pointer",
+                position: "relative",
+                fontSize: "20px",
+                top: "2px",
+                marginRight: "20px"
+              }}
+              >
+                {selectedTheme === "light" ? <FaSun /> : <FaMoon />}
+              </Typography>
+            </div>
+
             <Button color="white" sx={{ marginRight: "50px" }} onClick={logout}>
               Logout
             </Button>
