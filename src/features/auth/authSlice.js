@@ -4,37 +4,38 @@ import { getLocalToken, removeLocalToken, saveLocalToken } from "../../utils";
 
 const initialState = {
   token: null,
-  isLoggedIn: null,
-  isLogInError: null,
-  isRegistrationError: null,
+  isLoggedIn: false,
+  isLogInError: false,
+  isRegistrationError: false,
   user: null,
+};
+
+const handleUserData = async (dispatch) => {
+  try {
+    const { data: userData } = await authAPI.getUserData();
+    dispatch(userDataChange(userData));
+    dispatch(userIsLoggedChange(true));
+  } catch (error) {
+    handleLogout(dispatch);
+  }
+};
+
+const handleLogout = (dispatch) => {
+  removeLocalToken();
+  dispatch(userTokenChange(null));
+  dispatch(userIsLoggedChange(false));
 };
 
 export const checkLoggedIn = createAsyncThunk(
   "auth/checkLoggedIn",
   async (_, { getState, dispatch }) => {
-    const state = getState();
-    const isLoggedIn = state.auth.isLoggedIn;
+    const { token, isLoggedIn } = getState().auth;
+
     if (!isLoggedIn) {
-      let token = state.auth.token;
-      if (!token) {
-        const localToken = getLocalToken();
-        if (localToken) {
-          dispatch(userTokenChange(localToken));
-          token = localToken;
-        }
-        if (token) {
-          try {
-            const userDataResponse = await authAPI.getUserData(token);
-            const userData = await userDataResponse.data;
-            dispatch(userDataChange(userData));
-            dispatch(userIsLoggedChange(true));
-          } catch (error) {
-            removeLocalToken();
-            dispatch(userTokenChange(null));
-            dispatch(userIsLoggedChange(null));
-          }
-        }
+      const localToken = token || getLocalToken();
+      if (localToken) {
+        dispatch(userTokenChange(localToken));
+        await handleUserData(dispatch);
       }
     }
   }
@@ -43,9 +44,7 @@ export const checkLoggedIn = createAsyncThunk(
 export const removeLoggedIn = createAsyncThunk(
   "auth/removeLoggedIn",
   async (_, { dispatch }) => {
-    removeLocalToken();
-    dispatch(userTokenChange(null));
-    dispatch(userIsLoggedChange(null));
+    handleLogout(dispatch);
   }
 );
 
@@ -53,19 +52,15 @@ export const userLogin = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { dispatch }) => {
     try {
-      const response = await authAPI.logInGetToken(email, password);
-      const data = await response.data;
+      const { data } = await authAPI.logInGetToken(email, password);
       const token = data.token.result;
+
       if (token) {
         saveLocalToken(token);
         dispatch(userTokenChange(token));
-        dispatch(userIsLoggedChange(true));
-        const userDataResponse = await authAPI.getUserData(token);
-        const userData = await userDataResponse.data;
-        dispatch(userDataChange(userData));
+        await handleUserData(dispatch);
         dispatch(userIsErrorChange(false));
       }
-      return;
     } catch (error) {
       dispatch(userIsErrorChange(true));
     }
@@ -103,7 +98,6 @@ export const {
 } = authSlice.actions;
 
 export const isLoggedIn = (state) => state.auth.isLoggedIn;
-export const token = (state) => state.auth.token;
 export const authUser = (state) => state.auth.user;
 
 export default authSlice.reducer;
