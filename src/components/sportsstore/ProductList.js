@@ -15,15 +15,13 @@ export default function ProductList({ selectedCategory }) {
   const [filteredCategory, setFilteredCategory] = useState(0);
   const pageSize = 3;
   const [connection, setConnection] = useState(null);
-  const [ recieveData, setRecieveData ] = useState({});
 
   useEffect(() => {
     const connect = new HubConnectionBuilder()
       .withUrl(urls.hubs.ratingHubUrl)
       .build();
-    connect?.on('ReceiveRating', (product) => {
-      console.log(product, "из SignalR")
-      setRecieveData(product);
+    connect?.on('ReceiveRating', (productRating) => {
+      updateProductRating(productRating);
     });
     setConnection(connect);
   }, []);
@@ -39,11 +37,6 @@ export default function ProductList({ selectedCategory }) {
       };
     }
   }, [connection]);
-
-  useEffect(() => {
-    updateProductRating(recieveData);
-  }, [recieveData]);
-
 
   const updateProductRating = ({ productId, rating, ratingCount }) => {
     const arr = 
@@ -81,7 +74,7 @@ export default function ProductList({ selectedCategory }) {
         <Pagination
           count={totalPages}
           page={pageNumber}
-          onChange={(event, value) => setPageNumber(value)}
+          onChange={(_, pageNumber) => setPageNumber(pageNumber)}
           shape="rounded"
           color="primary"
         />
