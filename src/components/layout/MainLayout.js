@@ -5,7 +5,7 @@ import { removeLoggedIn, isLoggedIn } from "../../features/auth/authSlice";
 import { selectTheme, toggleTheme } from "../../features/theme/themeSlice";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import CartIcon from "../cart/CartIcon";
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { FaSun, FaMoon } from "react-icons/fa";
 
 export default function MainLayout() {
   const navigate = useNavigate();
@@ -30,6 +30,10 @@ export default function MainLayout() {
   const switchTheme = () => {
     dispatch(toggleTheme());
   };
+
+  useEffect(() => {
+    localStorage.setItem("theme", selectedTheme);
+  }, [selectedTheme]);
 
   return (
     <div>
@@ -61,18 +65,23 @@ export default function MainLayout() {
             </div>
           </div>
           <div
-            style={{ minWidth: "150px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            style={{
+              minWidth: "150px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <div>
               <Typography
                 onClick={switchTheme}
-                sx={{ 
-                cursor: "pointer",
-                position: "relative",
-                fontSize: "20px",
-                top: "2px",
-                marginRight: "20px"
-              }}
+                sx={{
+                  cursor: "pointer",
+                  position: "relative",
+                  fontSize: "20px",
+                  top: "2px",
+                  marginRight: "20px",
+                }}
               >
                 {selectedTheme === "light" ? <FaSun /> : <FaMoon />}
               </Typography>
