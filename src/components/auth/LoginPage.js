@@ -4,13 +4,13 @@ import { useLocation } from "react-router-dom";
 import { isLoggedIn, userLogin } from "../../features/auth/authSlice";
 import { Navigate } from "react-router-dom";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
+import { useInput }  from '../../hooks/useInput';
 
 export default function LoginPage() {
   const dispatch = useDispatch();
   const location = useLocation();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailProps, resetEmail] = useInput("");
+  const [passwordProps, resetPassword] = useInput("");
 
   const isLoggedInState = useSelector(isLoggedIn);
 
@@ -19,7 +19,9 @@ export default function LoginPage() {
 
   const submitForm = (event) => {
     event.preventDefault();
-    dispatch(userLogin({ email: email, password: password }));
+    dispatch(userLogin({ email: emailProps.value, password: passwordProps.value }));
+    resetEmail();
+    resetPassword();
   };
 
   return (
@@ -38,17 +40,13 @@ export default function LoginPage() {
               <Typography variant="h4" align="center" gutterBottom>
                 Вход в систему
               </Typography>
-              {/* <Button onClick={toggleTheme} variant="outlined" fullWidth>
-                Переключить тему
-              </Button> */}
               <form onSubmit={submitForm}>
                 <TextField
                   label="Email"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...emailProps}
                   required
                 />
                 <TextField
@@ -57,8 +55,7 @@ export default function LoginPage() {
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...passwordProps}
                   required
                 />
                 <Button
