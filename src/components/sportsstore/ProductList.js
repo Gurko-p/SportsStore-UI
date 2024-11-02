@@ -4,8 +4,8 @@ import Product from "./Product";
 import Pagination from "@mui/material/Pagination";
 import { isLoggedIn } from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
-import { HubConnectionBuilder } from "@microsoft/signalr";
 import { urls } from "../../api/urls";
+import { useInput, useSignalR } from "../../hooks/customHooks";
 
 export default function ProductList({ selectedCategory }) {
   const isLoggedInState = useSelector(isLoggedIn);
@@ -14,32 +14,10 @@ export default function ProductList({ selectedCategory }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [filteredCategory, setFilteredCategory] = useState(0);
   const pageSize = 3;
-  const [connection, setConnection] = useState(null);
+  
+  useSignalR(urls.hubs.ratingHubUrl, 'ReceiveRating', updateProductRating);
 
-  useEffect(() => {
-    const connect = new HubConnectionBuilder()
-      .withUrl(urls.hubs.ratingHubUrl)
-      .build();
-    connect?.on('ReceiveRating', (productRating) => {
-      updateProductRating(productRating);
-    });
-    setConnection(connect);
-  }, []);
-
-  useEffect(() => {
-    if (connection) {
-      connection
-        ?.start()
-        .then(() => console.log("Connected to SignalR hub"))
-        .catch((err) => console.log("Error while starting connection: " + err));
-      return () => {
-        connection?.stop();
-      };
-    }
-  }, [connection]);
-
-  const updateProductRating = ({ productId, rating, ratingCount }) => {
-    const arr = 
+  function updateProductRating({ productId, rating, ratingCount }) {
     setProducts(prev => prev?.map(product =>
       product?.id === productId ? { ...product, rating: { overallRating: rating, totalRates: ratingCount } } : product
     ));
@@ -48,7 +26,7 @@ export default function ProductList({ selectedCategory }) {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   useEffect(() => {
-    if (filteredCategory != selectedCategory) {
+    if (filteredCategory !== selectedCategory) {
       setPageNumber(1);
       setFilteredCategory(selectedCategory);
     }

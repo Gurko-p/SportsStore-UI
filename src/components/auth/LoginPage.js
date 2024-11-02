@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { isLoggedIn, userLogin } from "../../features/auth/authSlice";
 import { Navigate } from "react-router-dom";
 import { Container, TextField, Button, Typography, Box } from "@mui/material";
-import { useInput }  from '../../hooks/useInput';
+import { useInput }  from '../../hooks/customHooks';
 
 export default function LoginPage() {
   const dispatch = useDispatch();
